@@ -141,9 +141,36 @@
   .toplinks a.resume{background:var(--accent);color:#fff;border-color:var(--accent)}
   .toplinks a.resume:hover,.toplinks a.resume:focus-visible{background:var(--ink);color:var(--bg);border-color:var(--ink)}
   [data-theme="dark"] .toplinks a.resume{color:#141519}
+
+  /* boot loader */
+  #boot{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+    background:#F1EFE9;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    transition:opacity .45s ease}
+  #boot.done{opacity:0;pointer-events:none}
+  .boot-wrap{display:flex;flex-direction:column;align-items:center;gap:15px}
+  .boot-sig{display:flex;align-items:center;gap:11px;font-size:.92rem;font-weight:600;letter-spacing:.01em;color:#16130F}
+  .boot-sq{width:11px;height:11px;border-radius:2px;background:#2B4BD6;animation:boot-pulse 1s ease-in-out infinite}
+  .boot-name{overflow:hidden;white-space:nowrap;border-right:2px solid #2B4BD6;width:0;
+    animation:boot-type .72s steps(18,end) .05s forwards}
+  .boot-bar{width:172px;height:2px;background:rgba(0,0,0,.09);border-radius:2px;overflow:hidden}
+  .boot-bar i{display:block;height:100%;width:0;background:#2B4BD6;
+    animation:boot-fill .9s cubic-bezier(.65,0,.2,1) .05s forwards}
+  .boot-status{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:#8A8478;transition:color .3s}
+  #boot.ready .boot-sq{background:#3B9E5F;animation:none}
+  #boot.ready .boot-name{border-right-color:transparent}
+  #boot.ready .boot-status{color:#3B9E5F}
+  @keyframes boot-type{to{width:19ch}}
+  @keyframes boot-fill{to{width:100%}}
+  @keyframes boot-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.66);opacity:.55}}
+  @media (prefers-color-scheme:dark){#boot{background:#141519}.boot-sig{color:#ECEAE3}
+    .boot-bar{background:rgba(255,255,255,.1)}.boot-status{color:#6B7280}}
+  @media (prefers-reduced-motion:reduce){.boot-name{animation:none;width:auto;border-right:none}
+    .boot-sq{animation:none}.boot-bar i{animation:none;width:100%}#boot{transition:none}}
 </style>
 </head>
 <body>
+<div id="boot" aria-hidden="true"><div class="boot-wrap"><div class="boot-sig"><span class="boot-sq"></span><span class="boot-name">israel jacob ortiz</span></div><div class="boot-bar"><i></i></div><div class="boot-status">resolving</div></div></div>
+
 <div class="frame">
   <header class="masthead reveal">
     <div>
@@ -241,6 +268,16 @@
     root.setAttribute('data-theme',initial);render(initial);
     btn.addEventListener('click',function(){var n=root.getAttribute('data-theme')==='dark'?'light':'dark';root.setAttribute('data-theme',n);render(n);});
   })();
+</script>
+<script>
+(function(){var b=document.getElementById('boot');if(!b)return;var s=b.querySelector('.boot-status');
+var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var steps=['resolving','compiling','linking'],i=0,t;
+if(!rm){t=setInterval(function(){i++;if(i<steps.length)s.textContent=steps[i];},240);}
+var d=rm?120:950;
+setTimeout(function(){clearInterval(t);b.classList.add('ready');if(s)s.textContent='ready \u2713';
+setTimeout(function(){b.classList.add('done');},rm?0:240);
+setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);},rm?160:760);},d);})();
 </script>
 </body>
 </html>
